@@ -12,6 +12,7 @@ import { UserService } from './user.service';
 import { AuthService } from 'src/auth/auth.service';
 import { SignUpDto } from 'src/auth/dto/signup.dto';
 import { JwtGuard } from 'src/guard';
+import { UserWallet } from './dto';
 
 @Controller('user')
 export class UserController {
@@ -36,8 +37,13 @@ export class UserController {
     return this.userService.deleteUser(Number(id));
   }
 
-  @Patch("upgradeToCompany")
-  upgradeToCompany(@Query() id:string) {
+  @Patch('upgradeToCompany')
+  upgradeToCompany(@Query() id: string) {
     return this.userService.upgradeToCompany(Number(id));
+  }
+
+  @Patch('addWallet')
+  addWallet(@Body() walletDto: UserWallet) {
+    
   }
 }

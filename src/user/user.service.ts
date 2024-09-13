@@ -1,5 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
+import { UserWallet } from './dto';
 
 @Injectable()
 export class UserService {
@@ -40,6 +41,19 @@ export class UserService {
       data: {
         isCompany: true,
       },
+    });
+  }
+
+  async addWallet(dto: UserWallet) {
+    const user = await this.prisma.user.findUnique({
+      where: { id: dto.userId },
+    });
+    if (!user) {
+      throw new NotFoundException(`User with ID ${dto.userId} not found`);
+    }
+    return this.prisma.user.update({
+      where: { id: user.id },
+      data: { walletAddress: dto.walletAddress },
     });
   }
 }

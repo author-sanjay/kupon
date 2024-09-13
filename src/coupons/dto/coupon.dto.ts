@@ -28,6 +28,10 @@ export class CouponDto {
   @IsNotEmpty()
   @IsNumber()
   createdBy: number;
+
+  @IsNotEmpty()
+  @IsString()
+  nftAddress: string;
 }
 
 export class CouponTransfer {

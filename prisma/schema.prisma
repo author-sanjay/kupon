@@ -24,6 +24,7 @@ model User {
   middleName     String?
   isCompany      Boolean  @default(false)
   hash           String
+  walletAddress  String
   ownedCoupons   Coupon[] @relation("UserOwnsCoupons")
   createdCoupons Coupon[] @relation("UserCreatesCoupons")
 
@@ -41,6 +42,7 @@ model Coupon {
   photoUrl    String?
   expiry      DateTime
   isUsed      Boolean  @default(false)
+  nftAddress  String
 
   ownedBy Int
   owner   User @relation("UserOwnsCoupons", fields: [ownedBy], references: [id])
