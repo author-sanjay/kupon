@@ -45,6 +45,7 @@ export class AuthService {
           lastName: dto.lastName,
           isCompany: dto.isCompany,
           middleName: dto.middleName,
+          walletAddress: null,
         },
       });
 
