@@ -18,12 +18,16 @@ model User {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  email      String
-  firstName  String
-  lastName   String
-  middleName String?
-  isCompany  Boolean @default(false)
-  hash       String
+  email          String   @unique
+  firstName      String
+  lastName       String
+  middleName     String?
+  isCompany      Boolean  @default(false)
+  hash           String
+  ownedCoupons   Coupon[] @relation("UserOwnsCoupons")
+  createdCoupons Coupon[] @relation("UserCreatesCoupons")
+
+  @@map("users")
 }
 
 model Coupon {
@@ -37,4 +41,12 @@ model Coupon {
   photoUrl    String?
   expiry      DateTime
   isUsed      Boolean  @default(false)
+
+  ownedBy Int
+  owner   User @relation("UserOwnsCoupons", fields: [ownedBy], references: [id])
+
+  createdBy Int
+  creator   User @relation("UserCreatesCoupons", fields: [createdBy], references: [id])
+
+  @@map("coupons")
 }
