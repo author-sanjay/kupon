@@ -24,7 +24,7 @@ model User {
   middleName     String?
   isCompany      Boolean  @default(false)
   hash           String
-  walletAddress  String
+  walletAddress  String?
   ownedCoupons   Coupon[] @relation("UserOwnsCoupons")
   createdCoupons Coupon[] @relation("UserCreatesCoupons")
 

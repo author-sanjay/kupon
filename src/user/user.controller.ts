@@ -6,6 +6,7 @@ import {
   Patch,
   Post,
   Query,
+  Req,
   UseGuards,
 } from '@nestjs/common';
 import { UserService } from './user.service';
@@ -32,18 +33,27 @@ export class UserController {
     return this.userService.getUserById(Number(id));
   }
 
+  @UseGuards(JwtGuard)
+  @Get('getUser')
+  getUser(@Req() req: Request) {
+    const user = req['user'];
+    const userId = user.sub;
+    return this.userService.getUserById(userId);
+  }
+  @UseGuards(JwtGuard)
   @Delete('deleteUser')
   deleteUser(@Query() id: string) {
     return this.userService.deleteUser(Number(id));
   }
-
+  @UseGuards(JwtGuard)
   @Patch('upgradeToCompany')
   upgradeToCompany(@Query() id: string) {
     return this.userService.upgradeToCompany(Number(id));
   }
 
+  @UseGuards(JwtGuard)
   @Patch('addWallet')
   addWallet(@Body() walletDto: UserWallet) {
-    
+    return this.userService.addWallet(walletDto);
   }
 }

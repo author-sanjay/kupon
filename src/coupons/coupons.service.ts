@@ -17,6 +17,7 @@ export class CouponsService {
           photoUrl: dto.photoUrl,
           createdBy: dto.createdBy,
           ownedBy: dto.createdBy,
+          nftAddress: dto.nftAddress,
         },
       });
 
