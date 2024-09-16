@@ -10,9 +10,10 @@ export class CouponsService {
       const coupon = await this.prisma.coupon.create({
         data: {
           discount: dto.discount,
-          expiry: dto.expiry,
+          expiry: new Date(dto.expiry),
           platform: dto.platform,
           title: dto.title,
+          description: dto.description,
           isUsed: dto.isUsed,
           photoUrl: dto.photoUrl,
           createdBy: dto.createdBy,
@@ -78,6 +79,28 @@ export class CouponsService {
       return coupon;
     } catch (err) {
       throw new Error(`Failed to fetch coupon with ID ${id}: ${err.message}`);
+    }
+  }
+
+  async getSingleCouponByNftToken(token: number) {
+    try {
+      // Query the database to find a coupon by its NFT token address
+      const coupon = await this.prisma.coupon.findFirst({
+        where: { nftAddress: token.toString() },
+      });
+
+      // If no coupon is found, throw an error with a meaningful message
+      if (!coupon) {
+        throw new Error(`Coupon with NFT token ${token} not found.`);
+      }
+
+      // Return the found coupon
+      return coupon;
+    } catch (err) {
+      // Handle any errors that occur during the query
+      throw new Error(
+        `Failed to fetch coupon with NFT token ${token}: ${err.message}`,
+      );
     }
   }
 

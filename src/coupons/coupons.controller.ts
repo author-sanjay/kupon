@@ -46,4 +46,24 @@ export class CouponsController {
   transferCoupon(@Body() couponTranferDto: CouponTransfer) {
     return this.couponService.transferCoupon(couponTranferDto);
   }
+
+  @Post('addCouponsBatch')
+  async addCouponsBatch(@Body() coupons: any) {
+    const addedCoupons = [];
+
+    for (const coupon of coupons) {
+      const exists = await this.couponService.getSingleCouponByNftToken(
+        coupon.tokenId,
+      );
+      if (!exists) {
+        const addedCoupon = await this.couponService.createCoupon({
+          ...coupon,
+          nftAddress: coupon.tokenId.toString(),
+        });
+        addedCoupons.push(addedCoupon);
+      }
+    }
+
+    return addedCoupons;
+  }
 }
