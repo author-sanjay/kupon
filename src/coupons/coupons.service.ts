@@ -82,22 +82,14 @@ export class CouponsService {
     }
   }
 
-  async getSingleCouponByNftToken(token: number) {
+  async getSingleCouponByNftToken(token: string) {
     try {
-      // Query the database to find a coupon by its NFT token address
       const coupon = await this.prisma.coupon.findFirst({
-        where: { nftAddress: token.toString() },
+        where: { nftAddress: token },
       });
 
-      // If no coupon is found, throw an error with a meaningful message
-      if (!coupon) {
-        throw new Error(`Coupon with NFT token ${token} not found.`);
-      }
-
-      // Return the found coupon
       return coupon;
     } catch (err) {
-      // Handle any errors that occur during the query
       throw new Error(
         `Failed to fetch coupon with NFT token ${token}: ${err.message}`,
       );
@@ -106,15 +98,59 @@ export class CouponsService {
 
   async transferCoupon(dto: CouponTransfer) {
     try {
+      const user = await this.prisma.user.findFirst({
+        where: { walletAddress: dto.newUserWalletAddress },
+      });
+      console.log('found new USER');
+
+      if (!user) {
+        throw new Error('User not found with the provided wallet address.');
+      }
+
+      const coupon = await this.prisma.coupon.findFirst({
+        where: { nftAddress: dto.nftAddress },
+      });
+      console.log('FOund Coupon');
+      if (!coupon) {
+        throw new Error('Coupon not found with the provided nftAddress.');
+      }
+
       const transferredCoupon = await this.prisma.coupon.update({
-        where: { id: dto.id },
+        where: { id: coupon.id }, // Use the unique identifier for updating
         data: {
-          ownedBy: dto.newUserId,
+          ownedBy: user.id,
         },
       });
+      console.log('TRansfered');
       return transferredCoupon;
     } catch (err) {
-      throw new Error();
+      // Log the error and throw a more descriptive error
+      console.error('Error transferring coupon:', err);
+      throw new Error('Failed to transfer the coupon. Please try again later.');
+    }
+  }
+
+  async useCoupon(tokenId: string) {
+    try {
+      const coupon = await this.prisma.coupon.findFirst({
+        where: { nftAddress: tokenId },
+      });
+
+      if (!coupon) {
+        throw new Error('Coupon not found with the provided nftAddress.');
+      }
+
+      // Step 3: Update the coupon with the new owner's ID
+      const transferredCoupon = await this.prisma.coupon.update({
+        where: { id: coupon.id }, // Use the unique identifier for updating
+        data: {
+          isUsed: true,
+        },
+      });
+
+      return transferredCoupon;
+    } catch (error) {
+      throw error;
     }
   }
 }

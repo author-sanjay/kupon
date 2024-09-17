@@ -36,10 +36,10 @@ export class CouponDto {
 
 export class CouponTransfer {
   @IsNotEmpty()
-  @IsNumber()
-  id: number;
+  @IsString()
+  nftAddress: string;
 
   @IsNotEmpty()
-  @IsNumber()
-  newUserId: number;
+  @IsString()
+  newUserWalletAddress: string;
 }

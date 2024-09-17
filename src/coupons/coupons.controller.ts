@@ -44,6 +44,7 @@ export class CouponsController {
 
   @Patch('transferCoupon')
   transferCoupon(@Body() couponTranferDto: CouponTransfer) {
+    console.log(couponTranferDto);
     return this.couponService.transferCoupon(couponTranferDto);
   }
 
@@ -52,18 +53,24 @@ export class CouponsController {
     const addedCoupons = [];
 
     for (const coupon of coupons) {
+      console.log(coupon);
       const exists = await this.couponService.getSingleCouponByNftToken(
-        coupon.tokenId,
+        coupon.nftAddress,
       );
       if (!exists) {
         const addedCoupon = await this.couponService.createCoupon({
           ...coupon,
-          nftAddress: coupon.tokenId.toString(),
+          nftAddress: coupon.nftAddress,
         });
         addedCoupons.push(addedCoupon);
       }
     }
 
     return addedCoupons;
+  }
+
+  @Patch('useCoupon')
+  useCoupon(@Body() tokenId: string) {
+    return this.couponService.useCoupon(tokenId);
   }
 }
