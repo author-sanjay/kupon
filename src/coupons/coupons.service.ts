@@ -101,7 +101,6 @@ export class CouponsService {
       const user = await this.prisma.user.findFirst({
         where: { walletAddress: dto.newUserWalletAddress },
       });
-      console.log('found new USER');
 
       if (!user) {
         throw new Error('User not found with the provided wallet address.');
@@ -110,21 +109,18 @@ export class CouponsService {
       const coupon = await this.prisma.coupon.findFirst({
         where: { nftAddress: dto.nftAddress },
       });
-      console.log('FOund Coupon');
       if (!coupon) {
         throw new Error('Coupon not found with the provided nftAddress.');
       }
 
       const transferredCoupon = await this.prisma.coupon.update({
-        where: { id: coupon.id }, // Use the unique identifier for updating
+        where: { id: coupon.id },
         data: {
           ownedBy: user.id,
         },
       });
-      console.log('TRansfered');
       return transferredCoupon;
     } catch (err) {
-      // Log the error and throw a more descriptive error
       console.error('Error transferring coupon:', err);
       throw new Error('Failed to transfer the coupon. Please try again later.');
     }
@@ -140,9 +136,8 @@ export class CouponsService {
         throw new Error('Coupon not found with the provided nftAddress.');
       }
 
-      // Step 3: Update the coupon with the new owner's ID
       const transferredCoupon = await this.prisma.coupon.update({
-        where: { id: coupon.id }, // Use the unique identifier for updating
+        where: { id: coupon.id },
         data: {
           isUsed: true,
         },

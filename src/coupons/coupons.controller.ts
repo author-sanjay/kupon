@@ -44,7 +44,6 @@ export class CouponsController {
 
   @Patch('transferCoupon')
   transferCoupon(@Body() couponTranferDto: CouponTransfer) {
-    console.log(couponTranferDto);
     return this.couponService.transferCoupon(couponTranferDto);
   }
 
@@ -53,7 +52,6 @@ export class CouponsController {
     const addedCoupons = [];
 
     for (const coupon of coupons) {
-      console.log(coupon);
       const exists = await this.couponService.getSingleCouponByNftToken(
         coupon.nftAddress,
       );
